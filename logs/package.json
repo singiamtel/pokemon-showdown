@@ -1,0 +1,17 @@
+{
+  "name": "logs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "verify": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pkmn/data": "^0.9.1",
+    "@pkmn/protocol": "^0.6.23",
+    "@pkmn/sim": "^0.9.1"
+  }
+}

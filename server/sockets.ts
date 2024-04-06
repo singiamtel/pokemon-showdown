@@ -131,6 +131,9 @@ export const Sockets = new class {
 	}
 };
 
+// log everything we send out
+const outLog = fs.createWriteStream('logs/sockets.out.txt', {flags: 'a'});
+
 export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 	/** socketid:Connection */
 	sockets = new Map<string, import('sockjs').Connection>();
@@ -480,6 +483,14 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 
 		this.push(`*${socketid}\n${socketip}\n${socket.protocol}`);
 
+		const ogWrite = socket.write;
+		socket.write = (...args: any[]) => {
+			// console.log(`${args.join(' ')}`);
+			outLog.write(`${args.join(' ')}\n`);
+			return ogWrite.apply(socket, args as any);
+		};
+
+
 		socket.on('data', message => {
 			// drop empty messages (DDoS?)
 			if (!message) return;
@@ -508,7 +519,6 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 
 	_write(data: string) {
 		// console.log('worker received: ' + data);
-
 		const receiver = this.receivers[data.charAt(0)];
 		if (receiver) receiver.call(this, data);
 	}
